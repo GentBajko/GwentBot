@@ -1,5 +1,5 @@
 from time import sleep, perf_counter
-from pyautogui import press, click, keyDown, keyUp, typewrite, mouseDown, mouseUp
+from pyautogui import press, keyDown, keyUp, typewrite, mouseDown, mouseUp
 import pyautogui
 from random import randint
 
@@ -10,7 +10,7 @@ OPEN_GWENT_WAIT_TIME = 40
 # How many times to press enter to reach the main screen
 OPEN_GWENT_ENTER_PRESS = 2
 # Time it takes Gwent to start the game
-START_SEASONAL_LOAD_TIME = 38
+START_SEASONAL_LOAD_TIME = 50
 PLAYER_LEFT_X = 370
 PLAYER_RIGHT_X = 1580
 PLAYER_TOP_Y = 480
@@ -31,13 +31,12 @@ def timer(func):
 def switch_windows():
     global GWENT_WINDOW_NAME
     if pyautogui.getActiveWindowTitle() == 'Gwent':
-        sleep(0.5)
         return
     sleep(10)
     GWENT_WINDOW_NAME = pyautogui.getWindowsWithTitle('Gwent')[1]
     GWENT_WINDOW_NAME.activate()
     GWENT_WINDOW_NAME.maximize()
-    sleep(0.5)
+    return True
 
 
 def ingame_click(x=None, y=None, button='left', clicks=1, intervals=0.0):
@@ -48,7 +47,7 @@ def ingame_click(x=None, y=None, button='left', clicks=1, intervals=0.0):
 
 
 def open_gwent():
-    if not GWENT_WINDOW_NAME:
+    if not switch_windows():
         press('winleft')
         typewrite('gwent')
         press('enter')
@@ -101,7 +100,7 @@ def play_card():
                  y=randint(PLAYER_TOP_Y, PLAYER_BOTTOM_Y), clicks=2)
     x = 990
     y = 800
-    for i in range(5):
+    for i in range(2):
         ingame_click(x=x - (130 * i), y=600)
         ingame_click(x=x - (130 * i), y=y)
         press('enter', presses=3, interval=0.5)
@@ -110,12 +109,9 @@ def play_card():
 def pass_round():
     switch_windows()
     press('space', presses=5, interval=0.5)
-    keyDown('space')
-    sleep(1)
-    keyUp('space')
     sleep(10)
 
-
+@timer
 def forfeit(send_gg=True):
     switch_windows()
     ingame_click(0, 550, intervals=0.2)
@@ -126,6 +122,7 @@ def forfeit(send_gg=True):
     if send_gg:
         ingame_click(950, 910, intervals=0.2)
     ingame_click(970, 1030, clicks=3, intervals=1)
+    ingame_click(880, 1020, clicks=3, intervals=10)
 
 
 def open_kegs(kegs):
@@ -142,4 +139,4 @@ def open_kegs(kegs):
 
 
 if __name__ == '__main__':
-    open_kegs(7)
+    forfeit()
