@@ -91,7 +91,6 @@ def activate_token():
     ingame_click(850, 550)
 
 
-@timer
 def play_card():
     switch_windows()
     cards = [(800, 960), (900, 960), (600, 960), (700, 960), (800, 960),

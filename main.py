@@ -1,7 +1,8 @@
-from actions import open_gwent, start_seasonal, mulligan, \
+from actions import timer, open_gwent, start_seasonal, mulligan, \
     activate_leader, activate_token, play_card, pass_round, forfeit
 
 
+@timer
 def leader_token(times):
     for _ in range(times):
         mulligan()
@@ -11,6 +12,7 @@ def leader_token(times):
         pass_round()
 
 
+@timer
 def play(times):
     for _ in range(times):
         mulligan()
@@ -28,4 +30,4 @@ def play_gwent(games, leader, normal):
 
 
 if __name__ == '__main__':
-    play_gwent(2, 10, 30)
+    play_gwent(2, 10, 15)
