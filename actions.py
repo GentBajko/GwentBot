@@ -1,0 +1,134 @@
+from time import sleep, perf_counter
+from pyautogui import press, click, keyDown, keyUp, typewrite, mouseDown, mouseUp
+import pyautogui
+from random import randint
+
+pyautogui.PAUSE = 0.5
+SCREEN_SIZE = pyautogui.size()
+# Seconds it takes for Gwent to open
+OPEN_GWENT_WAIT_TIME = 40
+# How many times to press enter to reach the main screen
+OPEN_GWENT_ENTER_PRESS = 2
+# Time it takes Gwent to start the game
+START_SEASONAL_LOAD_TIME = 38
+PLAYER_LEFT_X = 370
+PLAYER_RIGHT_X = 1580
+PLAYER_TOP_Y = 480
+PLAYER_BOTTOM_Y = 870
+GWENT_WINDOW_NAME = None
+
+
+def timer(func):
+    def wrapper(*args, **kwargs):
+        start = perf_counter()
+        result = func(*args, **kwargs)
+        finish = perf_counter()
+        print(result, f'{(finish - start):0.12f}')
+        return result
+    return wrapper
+
+
+def switch_windows():
+    global GWENT_WINDOW_NAME
+    if pyautogui.getActiveWindowTitle() == 'Gwent':
+        sleep(0.5)
+        return
+    sleep(10)
+    GWENT_WINDOW_NAME = pyautogui.getWindowsWithTitle('Gwent')[1]
+    GWENT_WINDOW_NAME.activate()
+    GWENT_WINDOW_NAME.maximize()
+    sleep(0.5)
+
+
+def ingame_click(x=None, y=None, button='left', clicks=1, intervals=0.0):
+    for _ in range(clicks):
+        mouseDown(x, y, button)
+        mouseUp(x, y, button)
+        sleep(intervals)
+
+
+def open_gwent():
+    global GWENT_WINDOW_NAME
+    press('winleft')
+    typewrite('gwent')
+    press('enter')
+    sleep(OPEN_GWENT_WAIT_TIME)
+    GWENT_WINDOW_NAME = pyautogui.getWindowsWithTitle('Gwent')[1]
+    switch_windows()
+    for _ in range(OPEN_GWENT_ENTER_PRESS):
+        ingame_click(x=960, y=1020)
+    ingame_click(x=900, y=600)
+
+
+def start_seasonal():
+    switch_windows()
+    ingame_click(x=1400, y=555, intervals=1)
+    ingame_click(x=700, y=555)
+    sleep(START_SEASONAL_LOAD_TIME)
+
+
+def mulligan():
+    switch_windows()
+    cards = [(900, 520), (1200, 520), (1500, 520)]
+    for _ in range(5):
+        card = cards[randint(0, 2)]
+        ingame_click(x=card[0], y=card[1])
+
+
+def activate_leader():
+    switch_windows()
+    ingame_click(x=240, y=700, clicks=2)
+    sleep(3)
+    ingame_click(x=950, y=570, clicks=2)
+
+
+def activate_token():
+    switch_windows()
+    ingame_click(1100, 550)
+    press('enter', presses=3)
+    ingame_click(900, 550)
+    press('enter', presses=3)
+    ingame_click(850, 550)
+
+
+@timer
+def play_card():
+    switch_windows()
+    cards = [(800, 960), (900, 960), (600, 960), (700, 960), (800, 960),
+             (900, 960), (1000, 960), (1100, 960), (1200, 960), (1300, 960)]
+    card = cards[randint(0, 2)]
+    ingame_click(x=card[0], y=card[1])
+    sleep(0.7)
+    ingame_click(x=randint(PLAYER_LEFT_X, PLAYER_RIGHT_X),
+                 y=randint(PLAYER_TOP_Y, PLAYER_BOTTOM_Y), clicks=2)
+    x = 990
+    y = 800
+    for i in range(5):
+        ingame_click(x=x - (130 * i), y=600)
+        ingame_click(x=x - (130 * i), y=y)
+        press('enter', presses=3, interval=0.5)
+
+
+def pass_round():
+    switch_windows()
+    press('space', presses=5, interval=0.5)
+    keyDown('space')
+    sleep(1)
+    keyUp('space')
+    sleep(10)
+
+
+def forfeit(send_gg=True):
+    switch_windows()
+    ingame_click(0, 550, intervals=0.2)
+    ingame_click(350, 900, intervals=0.2)
+    ingame_click(180, 180, intervals=0.2)
+    ingame_click(900, 600, intervals=0.2)
+    sleep(10)
+    if send_gg:
+        ingame_click(950, 910, intervals=0.2)
+    ingame_click(970, 1030, clicks=3, intervals=1)
+
+
+if __name__ == '__main__':
+    forfeit()
