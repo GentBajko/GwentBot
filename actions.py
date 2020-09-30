@@ -48,16 +48,15 @@ def ingame_click(x=None, y=None, button='left', clicks=1, intervals=0.0):
 
 
 def open_gwent():
-    global GWENT_WINDOW_NAME
-    press('winleft')
-    typewrite('gwent')
-    press('enter')
-    sleep(OPEN_GWENT_WAIT_TIME)
-    GWENT_WINDOW_NAME = pyautogui.getWindowsWithTitle('Gwent')[1]
-    switch_windows()
-    for _ in range(OPEN_GWENT_ENTER_PRESS):
-        ingame_click(x=960, y=1020)
-    ingame_click(x=900, y=600)
+    if not GWENT_WINDOW_NAME:
+        press('winleft')
+        typewrite('gwent')
+        press('enter')
+        sleep(OPEN_GWENT_WAIT_TIME)
+        switch_windows()
+        for _ in range(OPEN_GWENT_ENTER_PRESS):
+            ingame_click(x=960, y=1020)
+        ingame_click(x=900, y=600)
 
 
 def start_seasonal():
@@ -129,5 +128,18 @@ def forfeit(send_gg=True):
     ingame_click(970, 1030, clicks=3, intervals=1)
 
 
+def open_kegs(kegs):
+    switch_windows()
+    cards = [(600, 330), (960, 330), (1300, 330)]
+    ingame_click(x=1620, y=50, intervals=7)
+    ingame_click(x=900, y=1030, intervals=2)
+    for _ in range(kegs):
+        switch_windows()
+        card = cards[randint(0, 2)]
+        ingame_click(x=960, y=330, clicks=2, intervals=0.05)
+        ingame_click(card[0], card[1], intervals=1.3)
+        ingame_click(x=960, y=1030, intervals=1.5)
+
+
 if __name__ == '__main__':
-    forfeit()
+    open_kegs(7)
