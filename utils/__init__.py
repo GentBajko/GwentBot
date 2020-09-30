@@ -111,7 +111,7 @@ def pass_round():
     press('space', presses=5, interval=0.5)
     sleep(10)
 
-@timer
+
 def forfeit(send_gg=True):
     switch_windows()
     ingame_click(0, 550, intervals=0.2)
@@ -136,6 +136,24 @@ def open_kegs(kegs):
         ingame_click(x=960, y=330, clicks=2, intervals=0.05)
         ingame_click(card[0], card[1], intervals=1.3)
         ingame_click(x=960, y=1030, intervals=1.5)
+
+
+def intro(times):
+    for _ in range(1, times):
+        mulligan()
+        activate_leader()
+        activate_token()
+        play_card()
+        pass_round()
+    return 'leader_token'
+
+
+def midgame(times):
+    for _ in range(times):
+        mulligan()
+        play_card()
+        pass_round()
+    return 'play'
 
 
 if __name__ == '__main__':
