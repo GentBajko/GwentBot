@@ -7,7 +7,7 @@ def play_gwent(games=1, minutes_per_game=8):
     leader_ratio = 0.22448979591836735
     if type(minutes_per_game) is float:
         minutes_per_game = int(minutes_per_game) + 1
-    seconds = (minutes_per_game * 60)
+    seconds = (minutes_per_game * 60) - 102
     normal = (((seconds * play_ratio) // 60) + 1) * 2
     leader = (((seconds * leader_ratio) // 60) + 1) * 2
     open_gwent()
@@ -30,4 +30,4 @@ def just_forfeit(games=1):
 
 
 if __name__ == '__main__':
-    play_gwent(1, 8)
+    play_gwent(1, 9)

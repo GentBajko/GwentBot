@@ -32,7 +32,6 @@ def timer(func):
 
 def switch_windows():
     global GWENT_WINDOW_NAME
-    print(pyautogui.getActiveWindowTitle())
     if pyautogui.getActiveWindowTitle() == 'Gwent':
         return True
     sleep(10)
@@ -172,4 +171,4 @@ def midgame(times):
 
 
 if __name__ == '__main__':
-    intro(1)
+    forfeit()

@@ -5,7 +5,7 @@ from utils import modes
 def gui():
     window = Tk()
     window.title("G(w)entBot v0.1")
-    window.iconbitmap("G(w)entBot.ico")
+    # window.iconbitmap("G(w)entBot.ico")
 
     frame = Frame()
     label = Label(master=frame, text="")
