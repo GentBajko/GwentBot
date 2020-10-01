@@ -5,16 +5,18 @@ from random import randint
 
 pyautogui.PAUSE = 0.5
 SCREEN_SIZE = pyautogui.size()
+X_SIZE = pyautogui.size()[0]
+Y_SIZE = pyautogui.size()[1]
 # Seconds it takes for Gwent to open
 OPEN_GWENT_WAIT_TIME = 40
 # How many times to press enter to reach the main screen
 OPEN_GWENT_ENTER_PRESS = 4
 # Time it takes Gwent to start the game
 START_SEASONAL_LOAD_TIME = 50
-PLAYER_LEFT_X = 370
-PLAYER_RIGHT_X = 1580
-PLAYER_TOP_Y = 480
-PLAYER_BOTTOM_Y = 870
+PLAYER_LEFT_X = round(X_SIZE * 0.19270833333333334)
+PLAYER_RIGHT_X = round(X_SIZE * 0.8229166666666666)
+PLAYER_TOP_Y = round(Y_SIZE * 0.4444444444444444)
+PLAYER_BOTTOM_Y = round(Y_SIZE * 0.8055555555555556)
 GWENT_WINDOW_NAME = None
 
 
@@ -35,7 +37,7 @@ def switch_windows():
         return True
     sleep(10)
     try:
-        GWENT_WINDOW_NAME = pyautogui.getWindowsWithTitle('Gwent')[1]
+        GWENT_WINDOW_NAME = pyautogui.getWindowsWithTitle('Gwent')[0]
         GWENT_WINDOW_NAME.activate()
         GWENT_WINDOW_NAME.maximize()
     except IndexError:
@@ -52,6 +54,7 @@ def ingame_click(x=None, y=None, button='left', clicks=1, intervals=0.0):
 
 def open_gwent():
     if not switch_windows():
+        print("Opening Gwent")
         press('winleft')
         typewrite('gwent')
         press('enter')
@@ -63,6 +66,8 @@ def open_gwent():
 
 def start_seasonal():
     switch_windows()
+    print("Starting Seasonal")
+    sleep(1)
     ingame_click(x=1400, y=555, intervals=1)
     ingame_click(x=700, y=555)
     sleep(START_SEASONAL_LOAD_TIME)
@@ -70,6 +75,7 @@ def start_seasonal():
 
 def mulligan():
     switch_windows()
+    print("Checking if there are cards to mulligan")
     cards = [(900, 520), (1200, 520), (1500, 520)]
     for _ in range(5):
         card = cards[randint(0, 2)]
@@ -78,6 +84,7 @@ def mulligan():
 
 def activate_leader():
     switch_windows()
+    print("Playing Leader Ability")
     ingame_click(x=240, y=700, clicks=2)
     sleep(3)
     ingame_click(x=950, y=570, clicks=2)
@@ -85,6 +92,7 @@ def activate_leader():
 
 def activate_token():
     switch_windows()
+    print("Activating Token")
     ingame_click(1100, 550)
     press('enter', presses=3)
     ingame_click(900, 550)
@@ -94,6 +102,7 @@ def activate_token():
 
 def play_card():
     switch_windows()
+    print("Playing Card")
     cards = [(800, 960), (900, 960), (600, 960), (700, 960), (800, 960),
              (900, 960), (1000, 960), (1100, 960), (1200, 960), (1300, 960)]
     card = cards[randint(0, 2)]
@@ -112,12 +121,12 @@ def play_card():
 def pass_round():
     switch_windows()
     press('space', presses=5, interval=0.5)
-    sleep(10)
 
 
 def forfeit(send_gg=True):
     switch_windows()
-    ingame_click(0, 550, intervals=0.2)
+    print("Forfeiting Game")
+    ingame_click(30, 550, intervals=0.2)
     ingame_click(350, 900, intervals=0.2)
     ingame_click(180, 180, intervals=0.2)
     ingame_click(900, 600, intervals=0.2)
@@ -125,7 +134,8 @@ def forfeit(send_gg=True):
     if send_gg:
         ingame_click(950, 910, intervals=0.2)
     ingame_click(970, 1030, clicks=3, intervals=1)
-    ingame_click(880, 1020, clicks=3, intervals=10)
+    ingame_click(880, 1020, clicks=3, intervals=7)
+    ingame_click(852, 1050, clicks=3, intervals=3)
 
 
 def open_kegs(kegs):
@@ -141,23 +151,25 @@ def open_kegs(kegs):
         ingame_click(x=960, y=1030, intervals=1.5)
 
 
+@timer
 def intro(times):
-    for _ in range(1, times):
+    for _ in range(int(times)):
         mulligan()
         activate_leader()
         activate_token()
         play_card()
         pass_round()
-    return 'leader_token'
+    return 'Intro Combo - '
 
 
+@timer
 def midgame(times):
-    for _ in range(times):
+    for _ in range(int(times)):
         mulligan()
         play_card()
         pass_round()
-    return 'play'
+    return 'Midgame Combo - '
 
 
 if __name__ == '__main__':
-    forfeit()
+    intro(1)

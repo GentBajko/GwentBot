@@ -7,8 +7,9 @@ def play_gwent(games=1, minutes_per_game=8):
     leader_ratio = 0.22448979591836735
     if type(minutes_per_game) is float:
         minutes_per_game = int(minutes_per_game) + 1
-    normal = (((((minutes_per_game * 60) - 110) * play_ratio) // 60) + 1)
-    leader = (((((minutes_per_game * 60) - 110) * leader_ratio) // 60) + 1)
+    seconds = (minutes_per_game * 60)
+    normal = (((seconds * play_ratio) // 60) + 1) * 2
+    leader = (((seconds * leader_ratio) // 60) + 1) * 2
     open_gwent()
     for _ in range(games):
         start_seasonal()
@@ -19,7 +20,7 @@ def play_gwent(games=1, minutes_per_game=8):
 
 
 @timer
-def just_forfeit(games):
+def just_forfeit(games=1):
     open_gwent()
     for _ in range(games):
         start_seasonal()
@@ -29,4 +30,4 @@ def just_forfeit(games):
 
 
 if __name__ == '__main__':
-    play_gwent(2, 7)
+    play_gwent(1, 8)
