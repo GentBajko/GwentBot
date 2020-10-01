@@ -4,6 +4,7 @@ from utils import modes
 
 def gui():
     window = Tk()
+    window.title("G(w)entBot v0.1")
 
     frame = Frame()
     label = Label(master=frame, text="")
