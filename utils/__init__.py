@@ -8,7 +8,7 @@ SCREEN_SIZE = pyautogui.size()
 # Seconds it takes for Gwent to open
 OPEN_GWENT_WAIT_TIME = 40
 # How many times to press enter to reach the main screen
-OPEN_GWENT_ENTER_PRESS = 2
+OPEN_GWENT_ENTER_PRESS = 4
 # Time it takes Gwent to start the game
 START_SEASONAL_LOAD_TIME = 50
 PLAYER_LEFT_X = 370
@@ -30,13 +30,17 @@ def timer(func):
 
 def switch_windows():
     global GWENT_WINDOW_NAME
+    print(pyautogui.getActiveWindowTitle())
     if pyautogui.getActiveWindowTitle() == 'Gwent':
-        return
+        return True
     sleep(10)
-    GWENT_WINDOW_NAME = pyautogui.getWindowsWithTitle('Gwent')[1]
-    GWENT_WINDOW_NAME.activate()
-    GWENT_WINDOW_NAME.maximize()
-    return True
+    try:
+        GWENT_WINDOW_NAME = pyautogui.getWindowsWithTitle('Gwent')[1]
+        GWENT_WINDOW_NAME.activate()
+        GWENT_WINDOW_NAME.maximize()
+    except IndexError:
+        return False
+    return False
 
 
 def ingame_click(x=None, y=None, button='left', clicks=1, intervals=0.0):
@@ -53,8 +57,7 @@ def open_gwent():
         press('enter')
         sleep(OPEN_GWENT_WAIT_TIME)
         switch_windows()
-        for _ in range(OPEN_GWENT_ENTER_PRESS):
-            ingame_click(x=960, y=1020)
+        ingame_click(x=960, y=1020, clicks=OPEN_GWENT_ENTER_PRESS, intervals=0.7)
         ingame_click(x=900, y=600)
 
 
